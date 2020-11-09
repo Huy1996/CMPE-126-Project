@@ -1,0 +1,1 @@
+/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/CMPE-126.dir/main.cpp.o CMakeFiles/CMPE-126.dir/school.cpp.o  -o CMPE-126.exe -Wl,--out-implib,libCMPE-126.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

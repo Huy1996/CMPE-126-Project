@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/minhh/CLionProjects/CMPE-126-Project/main.cpp
+school.h
+/cygdrive/c/Users/minhh/CLionProjects/CMPE-126-Project/school.h
+
+/cygdrive/c/Users/minhh/CLionProjects/CMPE-126-Project/school.cpp
+school.h
+/cygdrive/c/Users/minhh/CLionProjects/CMPE-126-Project/school.h
+
+/cygdrive/c/Users/minhh/CLionProjects/CMPE-126-Project/school.h
+iostream
+-
+string
+-
+iomanip
+-
+fstream
+-
+cstring
+-
+cctype
+-
+cstdlib
+-
+sstream
+-
+
