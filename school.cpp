@@ -11,31 +11,36 @@ string format_title()
 string choose_semeter()
 {
     string file_name;
-    cout << "\nChoose your semester.\n";
-    cout << "(1) Spring.         (2) Summer.           (3) Fall." << endl;
-    cout << "Your choice: ";
-    int choice;
-    cin >> choice;
-    cin.ignore();
-    switch (choice)
+    do
     {
-        case 1:
+        cout << "\nChoose your semester.\n";
+        cout << "(1) Spring.         (2) Summer.           (3) Fall." << endl;
+        cout << "Your choice: ";
+        string choice;
+        getline(cin, choice);
+        if(choice == "1")
+        {
             file_name = "Spring ";
             break;
-        case 2:
+        }
+        if(choice == "2")
+        {
             file_name = "Summer ";
             break;
-        case 3:
+        }
+        if(choice == "3")
+        {
             file_name = "Fall ";
             break;
-        default:
-            cout << "Invalid input.\n";
+        }
+        cout << "Invalid input.\n";
+        continue;
     }
-
+    while(true);
     cout << "Enter year: ";
-    cin >> choice;
-    cin.ignore();
-    file_name = file_name + to_string(choice) + ".txt";
+    string choice;
+    getline(cin, choice);
+    file_name = file_name + choice + ".txt";
     return file_name;
 }
 
@@ -298,11 +303,10 @@ void access::create_class()
         node *input = new node(data);
         append(input);
         cout << "\nAdd another student?\n(1) Yes.\n(Other). No\n";
-        int choose;
+        string choice;
         cout << "Your choice: ";
-        cin >> choose;
-        cin.ignore();
-        if(choose != 1)
+        getline(cin, choice);
+        if(choice != "1")
             break;
     }
     while(true);
@@ -315,19 +319,18 @@ void access::input_grade()
     cout << "Which grade do you want to input?\n";
     cout << "(1)Homeword.     (2)Quiz.      (3)Midterm.     (4)Final.     (other)Exit.\n";
     cout << "Your choice: ";
-    int i;
-    cin >> i;
-    cin.ignore();
-    if(i < 1 || i > 4)
+    string choice;
+    getline(cin, choice);
+    if (choice != "1" && choice != "2" && choice != "3" && choice != "4")
         return;
+    int i = stoi(choice);
     current = head;
-    while(current)
-    {
+    while (current) {
         int grade;
         cout << current->data.get_last() << ", " << current->data.get_first() << ": ";
         cin >> grade;
         cin.ignore();
-        switch(i)
+        switch (i)
         {
             case 1:
                 current->data.input_hw(grade);
@@ -357,9 +360,7 @@ void access::edit_grade()
         cout << "Enter student last name: ";
         getline(cin, ln);
         bool found = find(fn, ln);
-        if(!found)
-            cout << "Student are not exist.\n";
-        else
+        if(found)
         {
             int hw, quiz, mid, final;
             cout << current->data << endl;
@@ -378,7 +379,7 @@ void access::edit_grade()
             cin.ignore();
             current->data.input_score(quiz, hw, mid, final);
         }
-        cout << "Do you want to edit another student? (Enter 1 to exit): ";
+        cout << "\nDo you want to edit another student? (Enter 1 to exit): ";
         int exit;
         cin >> exit;
         cin.ignore();
@@ -404,10 +405,9 @@ void access::drop()
 }
 void access::access_class()
 {
-    bool run = true;
     do
     {
-        int choose;
+        string choice;
         cout << "\nWhat do you want to do with this class?\n";
         cout << "(1) Input grade. (Input grade for the whole class)\n";
         cout << "(2) Edit grade. (Specific student)\n";
@@ -416,47 +416,38 @@ void access::access_class()
         cout << "(5) Print student list.\n";
         cout << "(6) Exit class.\n";
         cout << "Your choice: ";
-        cin >> choose;
-        cin.ignore();
+        getline(cin, choice);
         cout << endl;
-        switch(choose)
+        if(choice ==  "1")
+            input_grade();
+        else if(choice ==  "2")
+            edit_grade();
+        else if(choice ==  "3")
+            create_class();
+        else if(choice ==  "4")
+            drop();
+        else if(choice ==  "5")
+            print();
+        else if(choice ==  "6")
+            break;
+        else
         {
-            case 1:
-                input_grade();
-                break;
-            case 2:
-                edit_grade();
-                break;
-            case 3:
-                create_class();
-                break;
-            case 4:
-                drop();
-                break;
-            case 5:
-                print();
-                break;
-            case 6:
-                run = false;
-                break;
-            default:
-                cout << "Invalid input.\n";
-                continue;
+            cout << "Invalid input.\n";
+            continue;
         }
+
     }
-    while(run);
-    int choose;
+    while(true);
+    string choose;
     cout << "\nSave before exit?\n(1) Yes.\n(Other). No\n";
     cout << "Your choice: ";
-    cin >> choose;
-    cin.ignore();
-    if(choose == 1)
+    getline(cin, choose);
+    if(choose == "1")
         write_to_file();
 }
 
 void access::teacher_command()
 {
-    bool exit_class = false;
     do
     {
         cout << "\nWhat do you want to do?\n";
@@ -464,33 +455,27 @@ void access::teacher_command()
         cout << "(2) Create class.\n";
         cout << "(3) Back to teacher homepage.\n";
         cout << "Your choice: ";
-        int choose;
-        cin >> choose;
-        cin.ignore();
-
-        switch (choose)
+        string choose;
+        getline(cin, choose);
+        cout << endl;
+        if(choose ==  "1")
         {
-            case 1:
-                file_name = choose_semeter();
-                read_from_file();
-                access_class();
-                break;
-            case 2:
-            {
-                file_name = choose_semeter();
-                create_class();
-                access_class();
-                break;
-            }
-            case 3:
-                exit_class = true;
-                break;
-            default:
-                cout << "Invalid input. Please try again.\n";
-                continue;
+            file_name = choose_semeter();
+            read_from_file();
+            access_class();
         }
+        else if(choose == "2")
+        {
+            file_name = choose_semeter();
+            create_class();
+            access_class();
+        }
+        else if(choose == "3")
+            break;
+        else
+            cout << "Invalid input. Please try again.\n";
     }
-    while(!exit_class);
+    while(true);
 }
 
 void access::write_to_file()
@@ -727,34 +712,27 @@ void teacher::save()
 
 void teacher::teacher_command()
 {
-    bool log_out = false;
     do
     {
         cout << "\nWhat do you want to do?\n";
         cout << "(1) Change password.\n" << "(2) Access class.\n" <<  "(3) Log out" << endl;
         cout << "Your choice: ";
-        int choice;
-        cin >> choice;
-        cin.ignore();
-        switch(choice)
+        string choice;
+        getline(cin, choice);
+        if(choice == "1")
+            change_password();
+        else if(choice == "2")
         {
-            case 1:
-                change_password();
-                break;
-            case 2:
-            {
-                access course;
-                course.teacher_command();
-                break;
-            }
-            case 3:
-                log_out = true;
-                cout << "Log out successful.\n";
-                break;
-            default:
-                cout << "Invalid input. Please try again.\n";
-                continue;
+            access course;
+            course.teacher_command();
         }
+        else if(choice == "3")
+        {
+            cout << "Log out successful.\n";
+            break;
+        }
+        else
+            cout << "Invalid input. Please try again.\n";
     }
-    while(!log_out);
+    while(true);
 }

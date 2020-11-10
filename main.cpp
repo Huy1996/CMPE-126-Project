@@ -12,31 +12,23 @@ int main() {
         cout << "Which page do you want to access?\n";
         cout << "(1) Teacher.\n(2) Student.\n(3) Exit.\n";
         cout << "Your choice: ";
-        int choice;
-        cin >> choice;
-        cin.ignore();
-        switch(choice)
+        string choice;
+        getline(cin, choice);
+        if(choice == "1")
         {
-            case 1:
-            {
-                teacher professor;
-                professor.login();
-                break;
-            }
-            case 2:
-            {
-                access stu;
-                stu.student_command();
-                break;
-            }
-            case 3:
-            {
-                return 0;
-            }
-            default:
-                cout << "Invalid input. Please try again.\n\n";
-                continue;
+            teacher professor;
+            professor.login();
         }
+        else if(choice == "2")
+        {
+            access stu;
+            stu.student_command();
+        }
+        else if(choice == "3")
+        {
+            return 0;
+        }
+        cout << "Invalid input. Please try again.\n\n";
     }
     while(true);
 }
