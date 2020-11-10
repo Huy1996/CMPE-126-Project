@@ -12,7 +12,7 @@ string choose_semeter()
 {
     string file_name;
     cout << "\nChoose your semester.\n";
-    cout << "(1) Spring." << setw(20) << "(2) Summer." << setw(20) << "(3) Fall." << endl;
+    cout << "(1) Spring.         (2) Summer.           (3) Fall." << endl;
     cout << "Your choice: ";
     int choice;
     cin >> choice;
@@ -84,6 +84,11 @@ string student::get_last()
     return last;
 }
 
+unsigned student::get_id()
+{
+    return student_id;
+}
+
 void student::input_hw(unsigned score)
 {
     hw = score;
@@ -110,24 +115,6 @@ void student::input_final(unsigned score)
 
 ostream &operator << (ostream &stream, const student &RHS)
 {
-    /*string to_print = RHS.first;
-    to_print.resize(16);
-    to_print += RHS.last;
-    to_print.resize(26);
-    to_print += to_string(RHS.student_id);
-    to_print.resize(34);
-    to_print += to_string(RHS.hw);
-    to_print.resize(40);
-    to_print += to_string(RHS.quiz);
-    to_print.resize(48);
-    to_print += to_string(RHS.midterm);
-    to_print.resize(55);
-    to_print += to_string(RHS.final);
-    to_print.resize(64);
-    to_print += to_string(RHS.average);
-
-    stream << to_print << endl;
-     */
     stream << left
            << setw(16) <<RHS.first
            << setw(10)<< RHS.last
@@ -199,13 +186,53 @@ void access::append(node *input)
 
 void access::delete_student()
 {
-    node *delete_node = current;
-    current = current->previous;
-    current->next = current->next->next;
-    current->next->previous = current;
-    delete delete_node;
-    current = head;
+    if(head == current && length == 1)
+    {
+        node *to_delete = head;
+        head = nullptr;
+        tail = nullptr;
+        current = nullptr;
+        delete to_delete;
+    }
+    else if(head == current)
+    {
+        node *to_delete = current;
+        head = head->next;
+        head->previous = nullptr;
+        current = head;
+        delete to_delete;
+    }
+    else if(current == tail)
+    {
+        node *to_delete = current;
+        tail = tail->previous;
+        tail->next = nullptr;
+        current = head;
+        delete to_delete;
+    }
+    else
+    {
+        node *delete_node = current;
+        current = current->previous;
+        current->next = current->next->next;
+        current->next->previous = current;
+        delete delete_node;
+        current = head;
+    }
     length--;
+}
+
+bool access::find(string first_name, unsigned id)
+{
+    current = head;
+    while(current)
+    {
+        if(current->data.get_first() == first_name && current->data.get_id() == id)
+            return true;
+        current= current->next;
+    }
+    cout << "Cannot find student.\n";
+    return false;
 }
 
 bool access::find(string first_name, string last_name)
@@ -351,7 +378,7 @@ void access::edit_grade()
             cin.ignore();
             current->data.input_score(quiz, hw, mid, final);
         }
-        cout << "Do you want to edit another student?(input 1 to exit): ";
+        cout << "Do you want to edit another student? (Enter 1 to exit): ";
         int exit;
         cin >> exit;
         cin.ignore();
@@ -361,6 +388,20 @@ void access::edit_grade()
     while(true);
 }
 
+void access::drop()
+{
+    string fn, ln;
+    cout << "\nEnter student first name: ";
+    getline(cin, fn);
+    cout << "Enter student last name: ";
+    getline(cin, ln);
+    bool found = find(fn, ln);
+    if(found)
+    {
+        delete_student();
+        cout << fn << " are being dropped.\n";
+    }
+}
 void access::access_class()
 {
     bool run = true;
@@ -390,16 +431,8 @@ void access::access_class()
                 create_class();
                 break;
             case 4:
-            {
-                string first, last;
-                cout << "Enter student first name: ";
-                getline(cin, first);
-                cout << "Enter student last name: ";
-                getline(cin, last);
-                find(first, last);
-                delete_student();
+                drop();
                 break;
-            }
             case 5:
                 print();
                 break;
@@ -482,16 +515,21 @@ void access::student_command()
     file_name = choose_semeter();
     read_from_file();
     string fn;
-    string ln;
+    unsigned id;
     cout << "\nEnter your first name: ";
     getline(cin, fn);
-    cout << "Enter your last name: ";
-    getline(cin, ln);
-    bool found = find(fn, ln);
+    cout << "Enter your student ID: ";
+    cin >> id;
+    cin.ignore();
+    bool found = find(fn, id);
     if(!found)
         cout << "Student are not exist.\n";
     else
+    {
+        cout << endl;
         print_student();
+        cout << endl;
+    }
 }
 
 void access::print()
@@ -622,8 +660,7 @@ void teacher::login()
         else
             current = head;
         int choice;
-        cout << "\nDo you want to go back to homepage?\n";
-        cout << "(1) Yes.\n(other) No.\n";
+        cout << "\nDo you want to go back to homepage? (Enter 1 to exit)\n";
         cout << "Your choice is: ";
         cin >> choice;
         cin.clear();
@@ -637,11 +674,55 @@ void teacher::login()
 
 void teacher::change_password()
 {
-    cout << "\nEnter new password: ";
-    string pass;
-    getline(cin, pass);
-    current->password = pass;
-    cout << "Password change successful.\n";
+    for(int i = 0; i < 3; i++)
+    {
+        string current_pass;
+        string pass1st;
+        string pass2nd;
+        cout << "\nEnter your password: ";
+        getline(cin, current_pass);
+        cout << "Enter new password: ";
+        getline(cin, pass1st);
+        cout << "Re-enter new password: ";
+        getline(cin, pass2nd);
+        if(current_pass == current->password)
+        {
+            if(pass1st == pass2nd)
+            {
+                current->password = pass1st;
+                save();
+                cout << "Password changed successful.\n";
+                return;
+            }
+            else
+            {
+                cout << "New password should be the same.\n";
+                i--;
+                continue;
+            }
+        }
+        else if(i != 2)
+            cout << "Wrong password.\n";
+    }
+    cout << "Wrong password so many times.\n";
+}
+
+void teacher::save()
+{
+    ofstream file;
+    file.open("admin.txt");
+    file << "PROFESSOR ACCOUNT LIST\n";
+    file << "#############################\n";
+    file << left << setw(20) << "USER_ID" << "PASSWORD" << endl;
+    file << "#############################\n";
+    teacher_node *run;
+    run = head;
+    while(run)
+    {
+        file << setw(20) << run->username << run->password << endl;
+        run = run->next;
+    }
+    file.close();
 }
 
 void teacher::teacher_command()
@@ -650,7 +731,7 @@ void teacher::teacher_command()
     do
     {
         cout << "\nWhat do you want to do?\n";
-        cout << "(1) Change password.\n" << "(2) Access class.\n" <<  "(other) Log out" << endl;
+        cout << "(1) Change password.\n" << "(2) Access class.\n" <<  "(3) Log out" << endl;
         cout << "Your choice: ";
         int choice;
         cin >> choice;
@@ -666,9 +747,13 @@ void teacher::teacher_command()
                 course.teacher_command();
                 break;
             }
-            default:
+            case 3:
                 log_out = true;
                 cout << "Log out successful.\n";
+                break;
+            default:
+                cout << "Invalid input. Please try again.\n";
+                continue;
         }
     }
     while(!log_out);

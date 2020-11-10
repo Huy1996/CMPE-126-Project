@@ -26,6 +26,7 @@ public:
     virtual ~student();
     string get_first();
     string get_last();
+    unsigned get_id();
     void input_score(unsigned quiz_score, unsigned hw_score, unsigned midterm_score, unsigned final_score);
     void calculate_average();
     void input_hw(unsigned score);
@@ -58,12 +59,14 @@ public:
     ~access();
     void append(node *input);
     void delete_student();
+    bool find(string first_name, unsigned id);
     bool find(string first_name, string last_name);
     int get_length();
     void access_class();
     void create_class();
     void input_grade();
     void edit_grade();
+    void drop();
     void sort();
     friend ostream& operator << (ostream &stream, const access &a);
     void read_from_file();
@@ -96,6 +99,7 @@ public:
     void append(teacher_node *input);
     bool find(string user, string pass);
     void create_list();
+    void save();
     void login();
     void change_password();
     void teacher_command();
