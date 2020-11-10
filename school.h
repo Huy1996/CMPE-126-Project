@@ -21,7 +21,9 @@ private:
     unsigned student_id;
     string first, last;
 public:
+    student();
     student(string firstname, string lastname, unsigned id);
+    virtual ~student();
     string get_first();
     string get_last();
     void input_score(unsigned quiz_score, unsigned hw_score, unsigned midterm_score, unsigned final_score);
@@ -37,8 +39,8 @@ public:
 class node{
 public:
     node *next, *previous;
-    student *data;
-    node(student *input);
+    student data;
+    node(student input);
     ~node();
 };
 
