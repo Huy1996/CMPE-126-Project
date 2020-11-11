@@ -6,37 +6,62 @@ string format_title()
     return to_print;
 }
 
+bool isNumber (const string &s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
 
+int getNumber()
+{
+    string input;
+    int to_return;
+    do
+    {
+        getline(cin, input);
+        if(isNumber(input))
+        {
+            to_return = stoi(input);
+            break;
+        }
+        cout << "\nInvalid input. Please enter a number.\n";
+        cout << "Please re-enter the number: ";
+    }
+    while(true);
+    return to_return;
+}
 
 string choose_semeter()
 {
     string file_name;
+    bool run = true;
     do
     {
         cout << "\nChoose your semester.\n";
         cout << "(1) Spring.         (2) Summer.           (3) Fall." << endl;
         cout << "Your choice: ";
-        string choice;
-        getline(cin, choice);
-        if(choice == "1")
+        int choice;
+        choice = getNumber();
+        switch (choice)
         {
-            file_name = "Spring ";
-            break;
+            case 1:
+                file_name = "Spring ";
+                run = false;
+                break;
+            case 2:
+                file_name = "Summer ";
+                run = false;
+                break;
+            case 3:
+                file_name = "Fall ";
+                run = false;
+                break;
+            default:
+                cout << "Invalid input.\n";
         }
-        if(choice == "2")
-        {
-            file_name = "Summer ";
-            break;
-        }
-        if(choice == "3")
-        {
-            file_name = "Fall ";
-            break;
-        }
-        cout << "Invalid input.\n";
-        continue;
     }
-    while(true);
+    while(run);
     cout << "Enter year: ";
     string choice;
     getline(cin, choice);
@@ -283,16 +308,17 @@ void access::read_from_file()
         append(input);
     }
     ifs.close();
+    sort();
 }
 
 void access::create_class()
 {
-    cout << "Add student.\n";
+    cout << "\nAdd student.\n";
     string first, last;
     unsigned id;
     do
     {
-        cout << "Enter student first name: ";
+        cout << "\nEnter student first name: ";
         getline(cin, first);
         cout << "Enter student last name: ";
         getline(cin, last);
@@ -310,6 +336,7 @@ void access::create_class()
             break;
     }
     while(true);
+    sort();
 }
 
 
@@ -319,18 +346,17 @@ void access::input_grade()
     cout << "Which grade do you want to input?\n";
     cout << "(1)Homeword.     (2)Quiz.      (3)Midterm.     (4)Final.     (other)Exit.\n";
     cout << "Your choice: ";
-    string choice;
-    getline(cin, choice);
-    if (choice != "1" && choice != "2" && choice != "3" && choice != "4")
+    int choice;
+    choice = getNumber();
+    if (choice < 1 || choice > 4)
         return;
-    int i = stoi(choice);
     current = head;
     while (current) {
         int grade;
         cout << current->data.get_last() << ", " << current->data.get_first() << ": ";
         cin >> grade;
         cin.ignore();
-        switch (i)
+        switch (choice)
         {
             case 1:
                 current->data.input_hw(grade);
@@ -366,23 +392,17 @@ void access::edit_grade()
             cout << current->data << endl;
             cout << "Input student grade. (Enter the same grade if nothing change)\n";
             cout << "Homeword: ";
-            cin >> hw;
-            cin.ignore();
+            hw = getNumber();
             cout << "Quiz: ";
-            cin >> quiz;
-            cin.ignore();
+            quiz = getNumber();
             cout << "Midterm: ";
-            cin >> mid;
-            cin.ignore();
+            mid = getNumber();
             cout << "Final: ";
-            cin >> final;
-            cin.ignore();
+            final = getNumber();
             current->data.input_score(quiz, hw, mid, final);
         }
         cout << "\nDo you want to edit another student? (Enter 1 to exit): ";
-        int exit;
-        cin >> exit;
-        cin.ignore();
+        int exit = getNumber();
         if (exit == 1)
             break;
     }
@@ -403,11 +423,36 @@ void access::drop()
         cout << fn << " are being dropped.\n";
     }
 }
+
+void access::swap(node *x, node *y)
+{
+    student temp = x->data;
+    x->data = y->data;
+    y->data = temp;
+}
+
+void access::sort()
+{
+    node *x, *y;
+    x=head;
+    while(x->next)
+    {
+        y = x->next;
+        while(y)
+        {
+            if(strcmp(x->data.get_first().c_str(), y->data.get_first().c_str()) > 0)
+                swap(x,y);
+            y=y->next;
+        }
+        x=x->next;
+    }
+}
+
 void access::access_class()
 {
     do
     {
-        string choice;
+        int choice;
         cout << "\nWhat do you want to do with this class?\n";
         cout << "(1) Input grade. (Input grade for the whole class)\n";
         cout << "(2) Edit grade. (Specific student)\n";
@@ -416,26 +461,25 @@ void access::access_class()
         cout << "(5) Print student list.\n";
         cout << "(6) Exit class.\n";
         cout << "Your choice: ";
-        getline(cin, choice);
+        choice = getNumber();
         cout << endl;
-        if(choice ==  "1")
+        if(choice ==  1)
             input_grade();
-        else if(choice ==  "2")
+        else if(choice ==  2)
             edit_grade();
-        else if(choice ==  "3")
+        else if(choice ==  3)
             create_class();
-        else if(choice ==  "4")
+        else if(choice ==  4)
             drop();
-        else if(choice ==  "5")
+        else if(choice ==  5)
             print();
-        else if(choice ==  "6")
+        else if(choice ==  6)
             break;
         else
         {
             cout << "Invalid input.\n";
             continue;
         }
-
     }
     while(true);
     string choose;
@@ -455,22 +499,21 @@ void access::teacher_command()
         cout << "(2) Create class.\n";
         cout << "(3) Back to teacher homepage.\n";
         cout << "Your choice: ";
-        string choose;
-        getline(cin, choose);
+        int choose = getNumber();
         cout << endl;
-        if(choose ==  "1")
+        if(choose ==  1)
         {
             file_name = choose_semeter();
             read_from_file();
             access_class();
         }
-        else if(choose == "2")
+        else if(choose == 2)
         {
             file_name = choose_semeter();
             create_class();
             access_class();
         }
-        else if(choose == "3")
+        else if(choose == 3)
             break;
         else
             cout << "Invalid input. Please try again.\n";
@@ -556,6 +599,7 @@ teacher::teacher()
     head = nullptr;
     tail = nullptr;
     current = nullptr;
+    valid = true;
 }
 
 teacher::~teacher()
@@ -623,29 +667,41 @@ bool teacher::find(string user, string pass)
     return false;
 }
 
-void teacher::login()
+bool teacher::login()
 {
     create_list();
     bool exit = false;
     string username, password;
     do
     {
-        cout << "\nEnter username: ";
-        getline(cin, username);
-        //cin.ignore();
+        for(int i = 0; i < 3; i++)
+        {
+            cout << "\nEnter username: ";
+            getline(cin, username);
+            //cin.ignore();
 
-        cout << "Enter password: ";
-        getline(cin, password);
-        //cin.ignore();
+            cout << "Enter password: ";
+            getline(cin, password);
+            //cin.ignore();
 
 
-        bool allow_access = find(username, password);
-        if(allow_access)
-            teacher_command();
-        else
-            current = head;
+            bool allow_access = find(username, password);
+            if (allow_access)
+            {
+                teacher_command();
+                break;
+            }
+            else if(i == 2)
+            {
+                cout << "Professor page are being locked.\n";
+                return false;
+            }
+        }
         int choice;
-        cout << "\nDo you want to go back to homepage? (Enter 1 to exit)\n";
+        if(!valid)
+            return false;
+        cout << "\nDo you want to go back to homepage?\n";
+        cout << "(1) Yes.\n(other) No.\n";
         cout << "Your choice is: ";
         cin >> choice;
         cin.clear();
@@ -655,6 +711,7 @@ void teacher::login()
         cout << endl;
     }
     while(!exit);
+    return true;
 }
 
 void teacher::change_password()
@@ -689,7 +746,8 @@ void teacher::change_password()
         else if(i != 2)
             cout << "Wrong password.\n";
     }
-    cout << "Wrong password so many times.\n";
+    cout << "Wrong password so many times.\nProfessor page are being locked for security purpose.\n";
+    valid = false;
 }
 
 void teacher::save()
@@ -714,6 +772,8 @@ void teacher::teacher_command()
 {
     do
     {
+        if(!valid)
+            return;
         cout << "\nWhat do you want to do?\n";
         cout << "(1) Change password.\n" << "(2) Access class.\n" <<  "(3) Log out" << endl;
         cout << "Your choice: ";

@@ -3,9 +3,9 @@ Year: 2020
 ________________________________________________________________________
 First           Last      ID      HW    Quiz    Mid    Final    Average
 ------------------------------------------------------------------------
-Nguyen          Duong     1234    90    95      95     98       95
+Nguyen          Duong     1234    90    95      90     98       94
 Alex            Smith     2345    56    93      95     15       58
-Liam            Johnson   3456    85    50      35     35       43
-Noah            Miller    4567    32    68      12     20       28
-Benjamin        Davis     5678    14    64      85     65       65
-Noman           Noname    44562   25    32      14     25       23
+Liam            Johnson   3456    85    50      65     35       52
+Noah            Miller    4567    32    68      46     20       38
+Benjamin        Davis     5678    14    64      35     65       50
+Noman           Noname    44562   25    32      85     25       44

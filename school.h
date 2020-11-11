@@ -67,8 +67,8 @@ public:
     void input_grade();
     void edit_grade();
     void drop();
+    void swap(node *x, node *y);
     void sort();
-    friend ostream& operator << (ostream &stream, const access &a);
     void read_from_file();
     void write_to_file();
     void teacher_command();
@@ -93,6 +93,7 @@ private:
     teacher_node *head;
     teacher_node *tail;
     teacher_node *current;
+    bool valid;
 public:
     teacher();
     ~teacher();
@@ -100,7 +101,7 @@ public:
     bool find(string user, string pass);
     void create_list();
     void save();
-    void login();
+    bool login();
     void change_password();
     void teacher_command();
 };

@@ -6,19 +6,22 @@
 
 int main() {
     cout << "Nguyen Minh Huy Duong\n";
-    cout << "014701349\n\n";
+    cout << "014701349\n";
+    bool valid = true;
     do
     {
-        cout << "Which page do you want to access?\n";
-        cout << "(1) Teacher.\n(2) Student.\n(3) Exit.\n";
+        cout << "\nWhich page do you want to access?\n";
+        cout << "(1) Professor.\n(2) Student.\n(3) Exit.\n";
         cout << "Your choice: ";
         string choice;
         getline(cin, choice);
-        if(choice == "1")
+        if(choice == "1" && valid)
         {
             teacher professor;
-            professor.login();
+            valid = professor.login();
         }
+        else if(choice == "1" && !valid)
+            cout << "Professor page have been locked.\n";
         else if(choice == "2")
         {
             access stu;
@@ -28,7 +31,8 @@ int main() {
         {
             return 0;
         }
-        cout << "Invalid input. Please try again.\n\n";
+        else
+            cout << "Invalid input. Please try again.\n\n";
     }
     while(true);
 }
