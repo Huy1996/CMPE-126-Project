@@ -13,6 +13,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <sstream>
+
 using namespace std;
 
 class student{
@@ -53,17 +54,10 @@ private:
     node *current;
     int length;
     string file_name;
-
-public:
-    access();
-    ~access();
     void append(node *input);
-    void delete_student();
-    bool find(string first_name, unsigned id);
-    bool find(string first_name, string last_name);
-    int get_length();
-    void access_class();
     void create_class();
+    void delete_student();
+    void clear_list();
     void input_grade();
     void edit_grade();
     void drop();
@@ -71,12 +65,20 @@ public:
     void sort();
     void read_from_file();
     void write_to_file();
-    void teacher_command();
-    void student_command();
+    int get_length();
     void print();
     void print_student();
+    void access_class();
+    bool find(string first_name, unsigned id);
+    bool find(string first_name, string last_name);
 
+protected:
+    void teacher_access();
 
+public:
+    access();
+    ~access();
+    void student_command();
 };
 
 class teacher_node{
@@ -88,21 +90,22 @@ public:
     ~teacher_node();
 };
 
-class teacher{
+class teacher: public access{
 private:
     teacher_node *head;
     teacher_node *tail;
     teacher_node *current;
     bool valid;
-public:
-    teacher();
-    ~teacher();
     void append(teacher_node *input);
     bool find(string user, string pass);
     void create_list();
     void save();
-    bool login();
     void change_password();
     void teacher_command();
+
+public:
+    teacher();
+    ~teacher();
+    bool login();
 };
 #endif //CMPE_126_SCHOOL_H

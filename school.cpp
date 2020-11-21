@@ -252,6 +252,13 @@ void access::delete_student()
     length--;
 }
 
+void access::clear_list()
+{
+    current = head;
+    while(current)
+        delete_student();
+}
+
 bool access::find(string first_name, unsigned id)
 {
     current = head;
@@ -448,10 +455,8 @@ void access::sort()
     }
 }
 
-void access::access_class()
-{
-    do
-    {
+void access::access_class() {
+    do {
         int choice;
         cout << "\nWhat do you want to do with this class?\n";
         cout << "(1) Input grade. (Input grade for the whole class)\n";
@@ -463,34 +468,37 @@ void access::access_class()
         cout << "Your choice: ";
         choice = getNumber();
         cout << endl;
-        if(choice ==  1)
+        if (choice == 1)
             input_grade();
-        else if(choice ==  2)
+        else if (choice == 2)
             edit_grade();
-        else if(choice ==  3)
+        else if (choice == 3)
             create_class();
-        else if(choice ==  4)
+        else if (choice == 4)
             drop();
-        else if(choice ==  5)
-            print();
-        else if(choice ==  6)
+        else if (choice == 5)
+            {
+                print();
+                cout<<"\nPress [Enter] to continue . . .";
+                getchar();
+            }
+        else if (choice == 6)
             break;
-        else
-        {
+        else {
             cout << "Invalid input.\n";
             continue;
         }
-    }
-    while(true);
+    } while (true);
     string choose;
     cout << "\nSave before exit?\n(1) Yes.\n(Other). No\n";
     cout << "Your choice: ";
     getline(cin, choose);
-    if(choose == "1")
+    if (choose == "1")
         write_to_file();
+    clear_list();
 }
 
-void access::teacher_command()
+void access::teacher_access()
 {
     do
     {
@@ -547,8 +555,7 @@ void access::student_command()
     cout << "\nEnter your first name: ";
     getline(cin, fn);
     cout << "Enter your student ID: ";
-    cin >> id;
-    cin.ignore();
+    id = getNumber();
     bool found = find(fn, id);
     if(!found)
         cout << "Student are not exist.\n";
@@ -648,7 +655,7 @@ void teacher::create_list()
 
 bool teacher::find(string user, string pass)
 {
-
+    current = head;
     while(current)
     {
         if(current->username == user)
@@ -672,22 +679,21 @@ bool teacher::login()
     create_list();
     bool exit = false;
     string username, password;
+    static int i = 0;
     do
     {
-        for(int i = 0; i < 3; i++)
+        for(i; i < 3; i++)
         {
             cout << "\nEnter username: ";
             getline(cin, username);
-            //cin.ignore();
 
             cout << "Enter password: ";
             getline(cin, password);
-            //cin.ignore();
-
 
             bool allow_access = find(username, password);
             if (allow_access)
             {
+                i = 0;
                 teacher_command();
                 break;
             }
@@ -696,6 +702,14 @@ bool teacher::login()
                 cout << "Professor page are being locked.\n";
                 return false;
             }
+            
+            cout << "\nLog in again? (Enter 1 to retry.): ";
+            int choose = getNumber();
+            if(choose != 1)
+            {
+                i++;
+                break;
+            }
         }
         int choice;
         if(!valid)
@@ -703,9 +717,7 @@ bool teacher::login()
         cout << "\nDo you want to go back to homepage?\n";
         cout << "(1) Yes.\n(other) No.\n";
         cout << "Your choice is: ";
-        cin >> choice;
-        cin.clear();
-        cin.ignore();
+        choice = getNumber();
         if(choice == 1)
             exit = true;
         cout << endl;
@@ -783,8 +795,7 @@ void teacher::teacher_command()
             change_password();
         else if(choice == "2")
         {
-            access course;
-            course.teacher_command();
+            teacher_access();
         }
         else if(choice == "3")
         {
